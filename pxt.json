@@ -1,0 +1,16 @@
+{
+    "name": "spritelife",
+    "description": "Syntax error in pxt.json",
+    "dependencies": {},
+    "files": [
+        "test.ts",
+        "README.md",
+        "main.blocks",
+        "main.ts",
+        "spritelives.ts"
+    ],
+    "preferredEditor": "tsprj",
+    "testFiles": [
+        "test.ts"
+    ]
+}

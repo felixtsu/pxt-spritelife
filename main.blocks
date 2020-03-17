@@ -1,0 +1,43 @@
+<xml xmlns="https://developers.google.com/blockly/xml"><variables><variable id="O},uPmMbnw[Dqez9{q[n">mySprite</variable><variable id="#:|~Vl`zQiYG5iH8!`fM">mySprite2</variable><variable type="KIND_SpriteKind" id="v_BL/p,W~Pf5{a.@s@ue">Player</variable><variable type="KIND_SpriteKind" id="co%NaEJ56LtXcslb2RRq">Projectile</variable><variable type="KIND_SpriteKind" id="BmEVmUE4sXN7?z^]dT@^">Food</variable><variable type="KIND_SpriteKind" id=")!JQ)OqY:}Om%3U6{HrC">Enemy</variable></variables><block type="pxt-on-start" x="0" y="0"><statement name="HANDLER"><block type="variables_set"><field name="VAR" id="O},uPmMbnw[Dqez9{q[n">mySprite</field><value name="VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow><block type="spritescreate"><value name="img"><shadow type="screen_image_picker"><field name="img">img`
+. . . . . . . . . . b 5 b . . . 
+. . . . . . . . . b 5 b . . . . 
+. . . . . . b b b b b b . . . . 
+. . . . . b b 5 5 5 5 5 b . . . 
+. . . . b b 5 d 1 f 5 d 4 c . . 
+. . . . b 5 5 1 f f d d 4 4 4 b 
+. . . . b 5 5 d f b 4 4 4 4 b . 
+. . . b d 5 5 5 5 4 4 4 4 b . . 
+. b b d d d 5 5 5 5 5 5 5 b . . 
+b d d d b b b 5 5 5 5 5 5 5 b . 
+c d d b 5 5 d c 5 5 5 5 5 5 b . 
+c b b d 5 d c d 5 5 5 5 5 5 b . 
+c b 5 5 b c d d 5 5 5 5 5 5 b . 
+b b c c c d d d 5 5 5 5 5 d b . 
+. . . . c c d d d 5 5 5 b b . . 
+. . . . . . c c c c c b b . . . 
+`</field></shadow></value><value name="kind"><shadow type="spritekind"><field name="MEMBER">Player</field></shadow></value></block></value><next><block type="variables_set"><field name="VAR" id="#:|~Vl`zQiYG5iH8!`fM">mySprite2</field><value name="VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow><block type="spritescreate"><value name="img"><shadow type="screen_image_picker"><field name="img">img`
+. . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . f f f f . . . . . . . . . . . . . . 
+. . . . f f f 2 2 f f f . . . . . . . . . . . . 
+. . . f f f 2 2 2 2 f f f . . . . . . . . . . . 
+. . f f f e e e e e e f f f . . . . . . . . . . 
+. . f f e 2 2 2 2 2 2 e e f . . . . . . . . . . 
+. . f e 2 f f f f f f 2 e f . . . . . . . . . . 
+. . f f f f e e e e f f f f . . . . . . . . . . 
+. f f e f b f 4 4 f b f e f f . . . . . . . . . 
+. f e e 4 1 f d d f 1 4 e e f . . . . . . . . . 
+f d f e e d d d d d 4 e f f . . . . . . . . . . 
+f b f f e e 4 4 4 e d d 4 e . . . . . . . . . . 
+f b f 4 f 2 2 2 2 e d d e . . . . . . . . . . . 
+f c f . f 2 2 c c c e e . . . . . . . . . . . . 
+. f f . f 4 4 c d c 4 f . . . . . . . . . . . . 
+. . . . f f f d d c f f . . . . . . . . . . . . 
+. . . . . f d d c f f . . . . . . . . . . . . . 
+. . . . c d d c . . . . . . . . . . . . . . . . 
+. . . . c d c . . . . . . . . . . . . . . . . . 
+. . . . c c . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . 
+`</field></shadow></value><value name="kind"><shadow type="spritekind"><field name="MEMBER">Enemy</field></shadow></value></block></value><next><block type="set_sprite_life"><value name="sprite"><block type="variables_get"><field name="VAR" id="#:|~Vl`zQiYG5iH8!`fM">mySprite2</field></block></value><value name="lives"><shadow type="math_number"><field name="NUM">3</field></shadow></value></block></next></block></next></block></statement></block><block type="spritesoverlap" x="0" y="305"><value name="HANDLER_DRAG_PARAM_sprite"><shadow type="argument_reporter_custom"><mutation typename="Sprite"/><field name="VALUE">sprite</field></shadow></value><value name="kind"><shadow type="spritekind"><field name="MEMBER">Player</field></shadow></value><value name="HANDLER_DRAG_PARAM_otherSprite"><shadow type="argument_reporter_custom"><mutation typename="Sprite"/><field name="VALUE">otherSprite</field></shadow></value><value name="otherKind"><shadow type="spritekind"><field name="MEMBER">Enemy</field></shadow></value><statement name="HANDLER"><block type="change_sprite_life"><value name="sprite"><block type="argument_reporter_custom"><mutation typename="Sprite"/><field name="VALUE">otherSprite</field></block></value><value name="delta"><shadow type="math_number"><field name="NUM">-1</field></shadow></value></block></statement></block><block type="on_sprite_life_zero" x="10" y="470"><value name="HANDLER_DRAG_PARAM_sprite"><shadow type="argument_reporter_custom"><mutation typename="Sprite"/><field name="VALUE">sprite</field></shadow></value><value name="spriteKind"><shadow type="spritekind"><field name="MEMBER">Enemy</field></shadow></value><statement name="HANDLER"><block type="hudChangeScoreBy"><value name="value"><shadow type="math_number"><field name="NUM">1</field></shadow></value><next><block type="spritedestroy"><mutation xmlns="http://www.w3.org/1999/xhtml" _expanded="0" _input_init="false"></mutation><value name="sprite"><block type="argument_reporter_custom"><mutation typename="Sprite"/><field name="VALUE">sprite</field></block></value></block></next></block></statement></block></xml>
