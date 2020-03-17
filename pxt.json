@@ -1,13 +1,16 @@
 {
-    "name": "spritelife",
-    "description": "Syntax error in pxt.json",
-    "dependencies": {},
+    "name": "spritelives",
+    "description": "helper blocks for sprite lives",
+    "version": "0.0.2",
+    "public": true,
+    "dependencies": {
+        "device": "*"
+    },
     "files": [
         "test.ts",
         "README.md",
         "main.blocks",
-        "main.ts",
-        "spritelives.ts"
+        "main.ts"
     ],
     "preferredEditor": "tsprj",
     "testFiles": [
