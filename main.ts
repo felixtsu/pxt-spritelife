@@ -7,7 +7,7 @@ namespace spritelives {
      * @param sprite
      * @param lives
      */
-    //% lives.defl=-1
+    //% lives.defl=3
     //% blockId="set_sprite_life" block="set %sprite=variables_get(mySprite) life to %lives"
     export function setSpriteLife(sprite: Sprite, lives: number) {
         sprite.data[SPRITE_LIVES_EXTENSION_LIFE_DATA] = lives
