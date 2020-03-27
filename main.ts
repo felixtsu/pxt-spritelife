@@ -1,3 +1,4 @@
+//% weight=99 color="#6d5ba5" icon="\uf004"
 namespace spritelives {
     const SPRITE_LIVES_EXTENSION_LIFE_DATA = "SPRITE_LIVES_EXTENSION_LIFE_DATA"
     let lifeZeroHandlers: { [key: number]: (sprite: Sprite) => void } = {}
