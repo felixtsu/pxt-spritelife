@@ -64,4 +64,69 @@ namespace spritelives {
         lifeZeroHandlers[spriteKind] = handler
     }
 
+    class GhostHandler {
+        originalHandler: (sprite: Sprite, otherSprite: Sprite) => void;
+        sprite: Sprite;
+
+        constructor(sprite: Sprite, originalHandler: (sprite: Sprite, otherSprite: Sprite) => void) {
+            this.sprite = sprite
+            this.originalHandler = originalHandler
+        }
+
+        wrapper(): (sprite: Sprite, otherSprite: Sprite) => void {
+            return function (sprite: Sprite, otherSprite: Sprite) {
+                // ignore overlap event during ghost peroid
+                if (sprite === sprite || otherSprite === sprite) {
+                    return
+                }
+
+                return this.originalHanlder(sprite, otherSprite)
+            }
+        }
+
+        unwrap(): (sprite: Sprite, otherSprite: Sprite) => void {
+            return this.originalHandler;
+        }
+
+    }
+
+    function wrap(sprite: Sprite, originalHandler: (sprite: Sprite, otherSprite: Sprite) => void) {
+        return new GhostHandler(sprite, originalHandler)
+    }
+
+   /**
+    * Set 'Ghost Mode' for Sprite for period of time(ms)
+    * @param sprite
+    * @param period
+    */
+    //% blockId="set_ghost_mode_for" block="set $sprite into sprite ghost mode (overlap with othersprite, but NOT tiles) for $period of time(ms)"
+    export function ghostModeFor(sprite: Sprite, period: number) {
+        let overlapHandlers = game.currentScene().overlapHandlers;
+
+        // todo dictionary implementation
+        let wrappedHandlers:scene.OverlapHandler[] = [];
+        let ghostHandlers:GhostHandler[] = [];
+        
+        for (let overlapHandler of overlapHandlers) {
+            if (overlapHandler.kind == sprite.kind()
+                || overlapHandler.otherKind == sprite.kind()) {
+                    let ghostHandler = wrap(sprite, overlapHandler.handler)
+                overlapHandler.handler = ghostHandler.wrapper() 
+                
+                wrappedHandlers.push(overlapHandler)
+                ghostHandlers.push(ghostHandler)
+            }
+        }
+        // todo 
+        control.runInParallel(function () {
+            loops.pause(period)
+
+            for (let i = 0; i < wrappedHandlers.length; i++) {
+                wrappedHandlers[i].handler = ghostHandlers[i].unwrap()
+            }
+
+        })
+
+    }
+
 }
