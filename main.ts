@@ -1,6 +1,12 @@
 //% weight=99 color="#6d5ba5" icon="\uf004"
 namespace spritelives {
     const SPRITE_LIVES_EXTENSION_LIFE_DATA = "SPRITE_LIVES_EXTENSION_LIFE_DATA"
+    const SPRITE_LIVES_EXTENSION_MAX_LIFE_DATA = "SPRITE_LIVES_EXTENSION_MAX_LIFE_DATA"
+
+    const SPRITE_HP_BAR_BG_COLOR = 1
+    const SPRITE_HP_BAR_FG_COLOR = 2
+
+
     let lifeZeroHandlers: { [key: number]: (sprite: Sprite) => void } = {}
 
     /**
@@ -12,14 +18,33 @@ namespace spritelives {
     //% blockId="set_sprite_life" block="set %sprite=variables_get(mySprite) life to %lives"
     export function setSpriteLife(sprite: Sprite, lives: number) {
         sprite.data[SPRITE_LIVES_EXTENSION_LIFE_DATA] = lives
+        if (sprite.data[SPRITE_LIVES_EXTENSION_MAX_LIFE_DATA] == undefined) {
+            setSpriteMaxLife(sprite, lives)
+        }
     }
+
+    /**
+     * set max lives of sprite
+     * @param sprite
+     * @param maxLives
+     */
+    //% lives.defl=3
+    //% blockId="set_sprite_life" block="set %sprite=variables_get(mySprite) max life to %maxLives"
+    export function setSpriteMaxLife(sprite: Sprite, maxLives: number) {
+        sprite.data[SPRITE_LIVES_EXTENSION_MAX_LIFE_DATA] = maxLives
+    }
+
+    function maxLivesOf(sprite:Sprite) :number{
+        return sprite.data[SPRITE_LIVES_EXTENSION_MAX_LIFE_DATA] || 0
+    }
+
 
     /**
      * get sprite lives
      * @param sprite
      */
     //% blockId="get_sprite_life" block="%sprite=variables_get(mySprite) life"
-    export function lifeOf(sprite: Sprite) {
+    export function lifeOf(sprite: Sprite):number {
         return sprite.data[SPRITE_LIVES_EXTENSION_LIFE_DATA]
     }
 
@@ -94,29 +119,88 @@ namespace spritelives {
         return new GhostHandler(sprite, originalHandler)
     }
 
-   /**
-    * Set 'Ghost Mode' for Sprite for period of time(ms)
-    * @param sprite
-    * @param period
-    */
-    //% blockId="set_ghost_mode_for" block="set $sprite into sprite ghost mode (overlap with othersprite, but NOT tiles) for $period of time(ms)"
+
+    class SpriteHpBarDrawer {
+        private hpManagedSprites: Sprite[];    
+        constructor() {
+            this.hpManagedSprites = []
+            game.onShade(() => {
+                this.drawHpBar()
+            })
+        }
+
+        drawHpBar() {
+            for (let hpManagedSprite of this.hpManagedSprites) {
+                let maxLives = maxLivesOf(hpManagedSprite)
+                let lives = lifeOf(hpManagedSprite)
+                this.drawSpriteHpBar(hpManagedSprite, lives, maxLives)
+            }
+        }
+
+        remove(sprite:Sprite) {
+            this.hpManagedSprites.removeElement(sprite)
+        }
+
+        add(sprite:Sprite) {
+            if(this.hpManagedSprites.find(value => value == sprite)) {
+                return 
+            }
+            this.hpManagedSprites.push(sprite)
+            sprite.onDestroyed(()=>{
+                this.hpManagedSprites.removeElement(sprite)
+            })
+        }
+
+        drawSpriteHpBar(sprite:Sprite, lives:number, maxLives:number){
+            let height = sprite.image.height 
+            let width = sprite.image.width
+            let barWidth = (width-2) * lives / maxLives
+
+            console.log(maxLives)
+            screen.fillRect(sprite.x - width / 2 + 1, sprite.y - height / 2 - 2, width - 2, 1, SPRITE_HP_BAR_BG_COLOR)
+            screen.fillRect(sprite.x - width / 2 + 1, sprite.y - height / 2 - 2, barWidth, 1, SPRITE_HP_BAR_FG_COLOR)
+        }
+    }
+    
+    let spriteHpBarDrawer = new SpriteHpBarDrawer()
+
+    //% blockId="show_hp_bar" block="toggle hp bar of %sprite=variables_get(mySprite) %show=toggleOnOff"
+    export function showHpBar(sprite: Sprite, show:boolean) {
+        // remove managed sprite if not show;
+        if (!show) {
+            spriteHpBarDrawer.remove(sprite)
+            return
+        }
+
+        spriteHpBarDrawer.add(sprite)
+    }
+
+
+    /**
+     * Set 'Sprite Ghost Mode'(overlap with othersprite, but NOT tiles) for Sprite for period of time(ms)
+     * eats all onOverlaps event
+     * @param sprite
+     * @param period
+     */
+    //% blockId="set_ghost_mode_for" block="set %sprite=variables_get(mySprite) into sprite ghost mode for $period of time(ms)"
     export function ghostModeFor(sprite: Sprite, period: number) {
         let overlapHandlers = game.currentScene().overlapHandlers;
 
         // todo dictionary implementation
-        let wrappedHandlers:scene.OverlapHandler[] = [];
-        let ghostHandlers:GhostHandler[] = [];
-        
+        let wrappedHandlers: scene.OverlapHandler[] = [];
+        let ghostHandlers: GhostHandler[] = [];
+
         for (let overlapHandler of overlapHandlers) {
             if (overlapHandler.kind == sprite.kind()
                 || overlapHandler.otherKind == sprite.kind()) {
-                    let ghostHandler = wrap(sprite, overlapHandler.handler)
-                overlapHandler.handler = ghostHandler.wrapper() 
-                
+                let ghostHandler = wrap(sprite, overlapHandler.handler)
+                overlapHandler.handler = ghostHandler.wrapper()
+
                 wrappedHandlers.push(overlapHandler)
                 ghostHandlers.push(ghostHandler)
             }
         }
+
         // todo 
         control.runInParallel(function () {
             loops.pause(period)
