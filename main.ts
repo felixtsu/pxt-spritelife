@@ -177,7 +177,7 @@ namespace spritelives {
 
 
     /**
-     * Set 'Sprite Ghost Mode'(overlap with othersprite, but NOT tiles) for Sprite for period of time(ms)
+     * Set 'Sprite Ghost Mode'(hits wall, but NOT overlap with other sprites) for Sprite for period of time(ms)
      * eats all onOverlaps event
      * @param sprite
      * @param period
@@ -186,7 +186,6 @@ namespace spritelives {
     export function ghostModeFor(sprite: Sprite, period: number) {
         let overlapHandlers = game.currentScene().overlapHandlers;
 
-        // todo dictionary implementation
         let wrappedHandlers: scene.OverlapHandler[] = [];
         let ghostHandlers: GhostHandler[] = [];
 
@@ -201,7 +200,6 @@ namespace spritelives {
             }
         }
 
-        // todo 
         control.runInParallel(function () {
             loops.pause(period)
 
